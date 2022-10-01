@@ -84,9 +84,7 @@ class CreateAlunoSerializer(serializers.HyperlinkedModelSerializer):
             "rg",
         ]
         def create(self, validated_data):
-        
-            user_data = validated_data.pop("user")
-            user = UserSerializer.create(UserSerializer(),validated_data=user_data)
+            user = get_user_model().objects.filter(url=validated_data.get("user"))
             if user.pk:
                 aluno,created = Aluno.objects.update_or_create(
                     user = user,
@@ -111,7 +109,7 @@ class CreateAlunoSerializer(serializers.HyperlinkedModelSerializer):
             )
             
 class CreateEgressoSerializer(serializers.HyperlinkedModelSerializer):
-    user = CreateUserSerializer()
+    user = CreateUserSerializer
 
     class Meta:
         model = Egresso
@@ -121,9 +119,7 @@ class CreateEgressoSerializer(serializers.HyperlinkedModelSerializer):
 
         def create(self, validated_data):
         
-            user_data = validated_data.pop("user")
-            user = CreateUserSerializer.create(CreateUserSerializer(),validated_data=user_data)
-            user = get_user_model().objects.filter(pk=user.pk)
+            user = get_user_model().objects.filter(url=validated_data.get("user"))
             if user.pk:
                 egresso,created = Egresso.objects.update_or_create(
                     user = user,
@@ -206,10 +202,8 @@ class CreateProfessorSerializer(serializers.HyperlinkedModelSerializer):
             "grau",
         ]
         def create(self, validated_data):
-            user_data = validated_data.pop("user")
-            user = CreateUserSerializer.create(
-                CreateUserSerializer(), validated_data=user_data
-            )
+            user = get_user_model().objects.filter(url=validated_data.get("user"))
+
             if user.pk:
                 professor,created = Professor.objects.update_or_create(
                     user = Professor.objects.filter(pk=user.pk),
@@ -244,8 +238,7 @@ class CreateDisciplinasSerializer(serializers.HyperlinkedModelSerializer):
             "pre_requisito",
         ]
         def create(self, validated_data):
-            id = validated_data.pop("prefessor")
-            prof = ProfessorSerializer.create(ProfessorSerializer(), validated_data=id)
+            prof = Professor.objects.filter(url=validated_data.get("user"))
             disciplina ,created = Disciplina.objects.update_or_create(
                 professor = prof,
                 nome = validated_data.pop("nome"),
