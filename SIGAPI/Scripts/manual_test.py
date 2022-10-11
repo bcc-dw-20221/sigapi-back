@@ -7,7 +7,7 @@ from datetime import datetime
 BASE_URL = "http://localhost:8000"
 
 # Vamos solicitar nosso par de tokens
-resp = r.post(f"{BASE_URL}/api/token/", {"username": "felipe", "password": "123456"})
+resp = r.post(f"{BASE_URL}/api/token/", {"username": "rond.nely", "password": "123"})
 
 print(resp.content.decode("utf-8"))
 
