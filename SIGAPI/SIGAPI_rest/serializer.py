@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
+
 from rest_framework.response import Response
 from SIGAPI_rest.models import Curso, Aluno, Egresso, Pais_aluno, Professor,Disciplina, Faltas, Boletim
 
@@ -12,6 +13,7 @@ class CursoSerializer(serializers.HyperlinkedModelSerializer):
         fields = "_all_"
 
 class CursoSerializer(serializers.HyperlinkedModelSerializer):
+
     class Meta:
         model = Curso
         fields = [
