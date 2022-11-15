@@ -31,7 +31,7 @@ print(resp.content.decode("utf-8"))
 # Vamos inserir um novo item no endpoint
 
 
-novo_corno = {
+novo_aluno = {
         "user": "http://127.0.0.1:8000/sigapi/api/users/4/",
         "matricula": 12346789,
         "cpf": 123546789,
@@ -47,7 +47,7 @@ novo_corno = {
 
 resp = r.post(
         f"{BASE_URL}/sigapi/api/aluno/",
-        data=novo_corno,
+        data=novo_aluno,
         headers={
             "Authorization": f"Bearer {tokens['access']}",
         },
