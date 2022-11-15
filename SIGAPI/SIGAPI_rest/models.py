@@ -26,47 +26,6 @@ class Aluno(models.Model):
     estado_civil = models.CharField(max_length=120, choices=choice)
     rg = models.CharField(max_length=10)
 
-class Egresso(models.Model):
-    """Dados do ALUNO"""
-    choice = (
-        ("C","casado"),
-        ("S","solteiro"),
-    )
-    user = models.OneToOneField(
-        
-        get_user_model(),
-        primary_key=True,
-        on_delete=models.CASCADE,
-        null=False,
-        related_name="Egresso",
-        )
-    matricula = models.IntegerField(unique=True)
-    endereco = models.CharField(max_length=120)
-    born = models.DateField()
-    cpf = models.IntegerField()
-    nome_pai = models.CharField(max_length=120)
-    nome_mae = models.CharField(max_length=120)
-    sexo = models.CharField(max_length=1)
-    telefone = models.CharField(max_length=15)
-    estado_civil = models.CharField(max_length=120, choices=choice)
-    rg = models.CharField(max_length=10)
-
-class Pais_aluno(models.Model):
-    """Dados do pai do aluno"""
-    user = models.OneToOneField(
-        
-        get_user_model(),
-        primary_key=True,
-        on_delete=models.CASCADE,
-        null=False,
-        related_name="pai de aluno +",
-        )
-    filho = models.ForeignKey(Aluno, on_delete=models.DO_NOTHING, related_name="filho")
-    endereco = models.CharField(max_length=120)
-    born = models.DateField()
-    cpf = models.IntegerField()
-    telefone = models.CharField(max_length=15)
-    rg = models.CharField(max_length=9)
 
 class Professor(models.Model):
     """Dados do PROFESSOR"""

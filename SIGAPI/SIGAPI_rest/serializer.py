@@ -3,9 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
-
 from rest_framework.response import Response
-from SIGAPI_rest.models import Curso, Aluno, Egresso, Pais_aluno, Professor,Disciplina, Faltas, Boletim
+from SIGAPI_rest.models import Curso, Aluno, Professor,Disciplina, Faltas, Boletim
 
 class CursoSerializer(serializers.HyperlinkedModelSerializer):
     class meta:
@@ -13,7 +12,6 @@ class CursoSerializer(serializers.HyperlinkedModelSerializer):
         fields = "_all_"
 
 class CursoSerializer(serializers.HyperlinkedModelSerializer):
-
     class Meta:
         model = Curso
         fields = [
@@ -40,7 +38,6 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta: 
         model = get_user_model()
         fields = ["url","username"]
-
 class CreateUserSerializer(serializers.HyperlinkedModelSerializer):
     password = serializers.CharField(
         write_only=True,
@@ -60,6 +57,12 @@ class CreateUserSerializer(serializers.HyperlinkedModelSerializer):
     def create(self, validated_data):
         validated_data["password"] = make_password(validated_data.get("password"))
         return super(CreateUserSerializer, self).create(validated_data)
+
+    def to_representation(self, instance):
+            representation = super().to_representation(instance)
+            if instance.username:
+                representation['username'] = instance.username
+            return representation
 
 class AlunoSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -90,7 +93,7 @@ class CreateAlunoSerializer(serializers.HyperlinkedModelSerializer):
             if user.pk:
                 aluno,created = Aluno.objects.update_or_create(
                     user = user,
-                    matricula = validated_data.pop("matricula"),
+                    matricula = validated_data.pop("matricula",None),
                     cpf = validated_data.pop("cpf"),
                     born = validated_data.pop("born"),
                     endereco = validated_data.pop("endereco"),
@@ -108,81 +111,6 @@ class CreateAlunoSerializer(serializers.HyperlinkedModelSerializer):
                 user.delete()
             return Response(
                 {"message": "Não pude criar um novo aluno"}, status=406
-            )
-            
-class CreateEgressoSerializer(serializers.HyperlinkedModelSerializer):
-    user = CreateUserSerializer
-
-    class Meta:
-        model = Egresso
-        fields = ["url", "user", "matricula", "cpf", "born","endereco",
-            "nome_pai", "nome_mae", "sexo", "telefone", "estado_civil", "rg",
-        ]
-
-        def create(self, validated_data):
-        
-            user = get_user_model().objects.filter(url=validated_data.get("user"))
-            if user.pk:
-                egresso,created = Egresso.objects.update_or_create(
-                    user = user,
-                    matricula = validated_data.pop("matricula"),
-                    cpf = validated_data.pop("cpf"),
-                    born = validated_data.pop("born"),
-                    endereco = validated_data.pop("endereco"),
-                    nome_pai = validated_data.pop("nome_pai"),
-                    nome_mae = validated_data.pop("nome_mae"),
-                    sexo = validated_data.pop("sexo"),
-                    telefone = validated_data.pop("telefone"),
-                    estado_civil = validated_data.pop("estado_civil"),
-                    rg = validated_data.pop("rg"),
-
-                )
-                if created:
-                    return egresso
-            else:
-                user.delete()
-            return Response(
-                {"message": "Não pude criar um novo aluno"}, status=406
-            )
-                  
-class CreatePaisSerializer(serializers.HyperlinkedModelSerializer):
-    user = CreateUserSerializer
-
-    class Meta:
-        model = Pais_aluno
-        fields = [
-            "url",
-            "user",
-            "filho",
-            "endereco",
-            "born",
-            "cpf",
-            "telefone",
-            "rg",
-        ]
-        def create(self, validated_data):
-        
-            user_data = validated_data.pop("user")
-
-            user = UserSerializer.create(
-                UserSerializer(), validated_data=user_data)
-            if user.pk:
-                pais,created = Aluno.objects.update_or_create(
-                    user = user,
-                    filho = Aluno.objects.filter(pk=validated_data.get("filho")),
-                    cpf = validated_data.pop("cpf"),
-                    born = validated_data.pop("born"),
-                    endereco = validated_data.pop("endereco"),
-                    telefone = validated_data.pop("telefone"),
-                    rg = validated_data.pop("rg"),
-
-                )
-                if created:
-                    return pais
-            else:
-                user.delete()
-            return Response(
-                {"message": "Não pude criar um novo pai"}, status=406
             )
 
 class ProfessorSerializer(serializers.HyperlinkedModelSerializer):
