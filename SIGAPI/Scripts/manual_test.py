@@ -30,11 +30,26 @@ print(resp.content.decode("utf-8"))
 
 # Vamos inserir um novo item no endpoint
 
+novo_user = {
+    "username": "mar",
+    "password": "123",
+    "email": "mar@gmail.com"
+}
+
+resp = r.post(
+        f"{BASE_URL}/sigapi/api/users/",
+        data=novo_user,
+        headers={
+            "Authorization": f"Bearer {tokens['access']}",
+        },
+)
+
+print(resp.content.decode("utf-8"))
 
 novo_aluno = {
-        "user": "http://127.0.0.1:8000/sigapi/api/users/4/",
-        "matricula": 12346789,
-        "cpf": 123546789,
+        "user": "http://127.0.0.1:8000/sigapi/api/users/5/",
+        "matricula": 1684184,
+        "cpf": 149129712,
         "born": "2022-10-11",
         "endereco": "aracati",
         "nome_pai": "qrq",
@@ -42,7 +57,7 @@ novo_aluno = {
         "sexo": "f",
         "telefone": "9985742",
         "estado_civil": "C",
-        "rg": "123546879"
+        "rg": "987654321"
 }
 
 resp = r.post(
