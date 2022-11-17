@@ -5,27 +5,11 @@ from datetime import datetime
 
 
 BASE_URL = "http://localhost:8000"
-
-# Vamos solicitar nosso par de tokens
-resp = r.post(f"{BASE_URL}/api/token/", {"username": "rond.nely", "password": "123"})
-
-print(resp.content.decode("utf-8"))
-
-# extraindo as tokens para uso nos próximos exemplos
-
-tokens = json.loads(resp.content)
-
-# Vamos verificar nossa token de acesso
-resp = r.post(
-    f"{BASE_URL}/api/token/verify/",
-    {"token": f"{tokens['access']}"},
-)
-
-print(f"A verificação da token retornou: {resp}")
+token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjY4NzAxNzcwLCJpYXQiOjE2Njg2OTgxNzAsImp0aSI6IjE4MjAyNGY1ZTc3MzRmOTFhNGZhZmE3NTVmNGZkYjkzIiwidXNlcl9pZCI6MX0.rw09PfUtKs7Q-tr4CYr8JcF4dNNndwnjSNiz757AzBQ"
 
 # Vamos acessar um dos endpoints
 resp = r.get(f"{BASE_URL}/sigapi/api/users/",headers={
-            "Authorization": f"Bearer {tokens['access']}",
+            "Authorization": f"Bearer {token}",
         },)
 
 print(resp.content.decode("utf-8")+"\n\n\n\n")
@@ -42,7 +26,7 @@ resp = r.post(
         f"{BASE_URL}/sigapi/api/users/",
         data=novo_user,
         headers={
-            "Authorization": f"Bearer {tokens['access']}",
+            "Authorization": f"Bearer {token}",
         },
 )
 
@@ -66,7 +50,7 @@ resp = r.post(
         f"{BASE_URL}/sigapi/api/aluno/",
         data=novo_aluno,
         headers={
-            "Authorization": f"Bearer {tokens['access']}",
+            "Authorization": f"Bearer {token}",
         },
 )
 
